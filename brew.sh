@@ -143,8 +143,8 @@ brew tap caskroom/versions
 # Core casks
 brew cask install --appdir="/Applications" alfred
 brew cask install --appdir="~/Applications" iterm2
-brew cask install --appdir="~/Applications" java
-brew cask install --appdir="~/Applications" xquartz
+# brew cask install --appdir="~/Applications" java
+# brew cask install --appdir="~/Applications" xquartz
 
 # Development tool casks
 brew cask install --appdir="/Applications" sublime-text
@@ -159,8 +159,12 @@ brew cask install --appdir="/Applications" firefox
 brew cask install --appdir="/Applications" skype
 brew cask install --appdir="/Applications" slack
 brew cask install --appdir="/Applications" dropbox
-brew cask install --appdir="/Applications" evernote
-brew cask install --appdir="/Applications" 1password
+brew cask install --appdir="/Applications" vlc
+brew cask install --appdir="/Applications" the-unarchiver
+brew cask install --appdir="/Applications" caffeine
+
+# brew cask install --appdir="/Applications" evernote
+# brew cask install --appdir="/Applications" 1password
 #brew cask install --appdir="/Applications" gimp
 #brew cask install --appdir="/Applications" inkscape
 
@@ -168,8 +172,8 @@ brew cask install --appdir="/Applications" 1password
 #brew cask install --appdir="/Applications" mactex
 
 # Install Docker, which requires virtualbox
-brew install docker
-brew install boot2docker
+# brew install docker
+# brew install boot2docker
 
 # Install developer friendly quick look plugins; see https://github.com/sindresorhus/quick-look-plugins
 brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzipql qlimagesize webpquicklook suspicious-package
