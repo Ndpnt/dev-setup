@@ -1,5 +1,4 @@
 [alias]
-
     # View abbreviated SHA, description, and history graph of the latest 20 commits
     l = log --pretty=oneline -n 20 --graph --abbrev-commit
 
@@ -22,7 +21,7 @@
     ca = !git add -A && git commit -av
 
     # Switch to a branch, creating it if necessary
-    go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+    co = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
 
     # Show verbose output about tags, branches or remotes
     tags = tag -l
@@ -61,16 +60,34 @@
     contributors = shortlog --summary --numbered
 
     # Merge GitHub pull request on top of the `master` branch
-    mpr = "!f() { \
-        if [ $(printf \"%s\" \"$1\" | grep '^[0-9]\\+$' > /dev/null; printf $?) -eq 0 ]; then \
-            git fetch origin refs/pull/$1/head:pr/$1 && \
-            git rebase master pr/$1 && \
-            git checkout master && \
-            git merge pr/$1 && \
-            git branch -D pr/$1 && \
-            git commit --amend -m \"$(git log -1 --pretty=%B)\n\nCloses #$1.\"; \
-        fi \
-    }; f"
+    # mpr = "!f() { \
+    #     if [ $(printf \"%s\" \"$1\" | grep '^[0-9]\\+$' > /dev/null; printf $?) -eq 0 ]; then \
+    #         git fetch origin refs/pull/$1/head:pr/$1 && \
+    #         git rebase master pr/$1 && \
+    #         git checkout master && \
+    #         git merge pr/$1 && \
+    #         git branch -D pr/$1 && \
+    #         git commit --amend -m \"$(git log -1 --pretty=%B)\n\nCloses #$1.\"; \
+    #     fi \
+    # }; f"
+
+    # Delete a branch both locally and remotely
+    drop = !"git branch -D $1; git push origin --delete"
+
+    # rebase master intreactively
+    rbi = rebase -i master
+
+    # Remove branches that have already been merged with master, will not delete master if master is not checked out
+    branches-cleanup = !"git branch --merged master | grep -v \"^\\*\\|  master\" | xargs -n 1 git branch -d && git remote prune origin"
+    remote-branches-cleanup = !"git fetch -p origin && git branch -r --merged | grep origin |grep -v '>' | grep -v develop | xargs -L1 | cut -d"/" -f2- | xargs git push origin --delete"
+
+    # See commit history for just the current branch
+    current-history = !"git cherry -v master"
+
+    force = push --force-with-lease
+
+    wip = !"git add . --all; git commit -m wip"
+    unwip = "!if [[ `git log --format=\"%s\" -1` = \"wip\" ]]; then git reset --soft HEAD^1 && git reset HEAD; else echo 'Last commit was not a wip'; fi;"
 
 [apply]
 
@@ -86,7 +103,7 @@
     # Treat spaces before tabs and all kinds of trailing whitespace as an error
     # [default] trailing-space: looks for spaces at the end of a line
     # [default] space-before-tab: looks for spaces before tabs at the beginning of a line
-    whitespace = space-before-tab,-indent-with-non-tab,trailing-space
+    whitespace = trailing-space
 
     # Make `git rebase` safer on OS X
     # More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
@@ -136,6 +153,9 @@
     # Include summaries of merged commits in newly created merge commit messages
     log = true
 
+[rebase]
+    autosquash = true
+
 [push]
 
     # Use the Git 1.x.x default to avoid errors on machines with old Git
@@ -144,6 +164,20 @@
     default = matching
     # Make `git push` push relevant annotated tags when pushing branches out.
     followTags = true
+
+[user]
+    name = Nicolas Dupont
+    email = npg.dupont@gmail.com
+
+[pager]
+    log = diff-highlight | less
+    show = diff-highlight | less
+    diff = diff-highlight | less
+[pull]
+    rebase = true
+[help]
+    autocorrect = 1
+
 
 # URL shorthands
 
